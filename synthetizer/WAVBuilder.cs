@@ -21,29 +21,31 @@ namespace synthetizer
             }
 
             FileStream file = File.OpenWrite(Path);
+            BinaryWriter writer = new BinaryWriter(file, Encoding.UTF8, false);
 
             // header
-            file.Write(Encoding.ASCII.GetBytes("RIFF"), 0, 4); // RIFF ID
-            file.Write(BitConverter.GetBytes(4 + 26 + 12 + (8 + sizeof(float) * 1 * signal.Samples.Length + 0)), 0, 4); // chunk size
-            file.Write(Encoding.ASCII.GetBytes("WAVE"), 0, 4); // WAVE chunk ID
-            file.Write(Encoding.ASCII.GetBytes("fmt "), 0, 4); // fmt chunk ID
-            file.Write(BitConverter.GetBytes((short)3), 0, 2); // format code
-            file.Write(BitConverter.GetBytes((short)1), 0, 2); // channel number
-            file.Write(BitConverter.GetBytes(signal.SamplingRate * 1000), 0, 4); // samples/sec
-            file.Write(BitConverter.GetBytes(signal.SamplingRate * 1000 * sizeof(float) * 1), 0, 4); // avg bytes/sec
-            file.Write(BitConverter.GetBytes((short)(sizeof(float) * signal.Samples.Length)), 0, 2); // block align
-            file.Write(BitConverter.GetBytes((short)(8 * sizeof(float))), 0, 2); // bits/sample
-            file.Write(BitConverter.GetBytes((short)0), 0, 2); // extension size = 0
-            file.Write(Encoding.ASCII.GetBytes("fact"), 0, 4); // fact chunk ID
-            file.Write(BitConverter.GetBytes(4), 0, 4); // chunk size
-            file.Write(BitConverter.GetBytes(1 * signal.Samples.Length), 0, 4); // sample length
-            file.Write(Encoding.ASCII.GetBytes("data"), 0, 4); // data chunk ID
-            file.Write(BitConverter.GetBytes(sizeof(float) * 1 * signal.Samples.Length), 0, 4); // chunk size
+            writer.Write(Encoding.UTF8.GetBytes("RIFF")); // RIFF ID
+            writer.Write(4 + 26 + 12 + (8 + sizeof(float) * 1 * signal.Samples.Length + 0)); // chunk size
+            writer.Write(Encoding.UTF8.GetBytes("WAVE"), 0, 4); // WAVE ID
+            writer.Write(Encoding.UTF8.GetBytes("fmt "), 0, 4); // fmt chunk ID
+            writer.Write(18); // chunk size
+            writer.Write((short)3); // format code
+            writer.Write((short)1); // channel number
+            writer.Write(signal.SamplingRate * 1000); // samples/sec
+            writer.Write(signal.SamplingRate * 1000 * sizeof(float) * 1); // avg bytes/sec
+            writer.Write((short)(sizeof(float) * signal.Samples.Length)); // block align
+            writer.Write((short)(8 * sizeof(float))); // bits/sample
+            writer.Write((short)0); // extension size = 0
+            writer.Write(Encoding.UTF8.GetBytes("fact"), 0, 4); // fact chunk ID
+            writer.Write(4); // chunk size
+            writer.Write(1 * signal.Samples.Length); // sample length
+            writer.Write(Encoding.UTF8.GetBytes("data"), 0, 4); // data chunk ID
+            writer.Write(sizeof(float) * 1 * signal.Samples.Length); // chunk size
 
             // sampled data
             foreach(float sample in signal.Samples)
             {
-                file.Write(BitConverter.GetBytes(sample), 0, 4);
+                writer.Write(sample);
             }
 
             file.Close();
