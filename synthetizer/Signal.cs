@@ -26,7 +26,7 @@ namespace synthetizer
             for(int i = 0; i < sampleLength * samplingRate * 1000; i++)
             {
                 float timestamp = (float)i / (samplingRate * 1000);
-                signal.Samples[i] = amplitude * MathF.Sin(-frequency * timestamp);
+                signal.Samples[i] = amplitude * MathF.Sin(-frequency * MathF.Tau * timestamp);
             }
             return signal;
         }
