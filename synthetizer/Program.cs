@@ -1,4 +1,4 @@
 ﻿using synthetizer;
 
 WAVBuilder builder = new WAVBuilder("../test.wav");
-builder.Write(Signal.SineSignal(4400, 1, 48, 5));
+builder.Write(Signal.SquareSignal(20, 1, 48, 5));

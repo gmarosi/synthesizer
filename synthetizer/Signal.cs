@@ -26,7 +26,19 @@ namespace synthetizer
             for(int i = 0; i < sampleLength * samplingRate * 1000; i++)
             {
                 float timestamp = (float)i / (samplingRate * 1000);
-                signal.Samples[i] = amplitude * MathF.Sin(-frequency * MathF.Tau * timestamp);
+                signal.Samples[i] = amplitude * MathF.Cos(frequency * MathF.Tau * timestamp);
+            }
+            return signal;
+        }
+
+        public static Signal SquareSignal(int frequency, float amplitude, int samplingRate, float sampleLength)
+        {
+            Signal signal = new Signal(samplingRate);
+            signal.Samples = new float[(int)sampleLength * samplingRate * 1000];
+            for (int i = 0; i < sampleLength * samplingRate * 1000; i++)
+            {
+                float timestamp = (float)i / (samplingRate * 1000);
+                signal.Samples[i] = MathF.Cos(frequency * MathF.Tau * timestamp) > 0 ? amplitude : -amplitude;
             }
             return signal;
         }
